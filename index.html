@@ -6,60 +6,57 @@
 <title>Hot Works Permit</title>
 
 <style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background:#f2f2f2;
-  margin:0;
-  padding:12px;
+body{
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+  background:#f2f2f2;margin:0;padding:12px
 }
-h1{text-align:center}
+h1,h2{text-align:center;margin:6px 0}
 .section{
-  background:#fff;
-  padding:14px;
-  margin-bottom:14px;
-  border-radius:10px;
+  background:#fff;padding:14px;margin-bottom:14px;border-radius:10px
 }
-label{font-weight:600;display:block;margin-top:10px}
+label{display:block;font-weight:600;margin-top:10px}
 input,textarea{
-  width:100%;
-  padding:10px;
-  font-size:16px;
-  margin-top:6px;
-  border-radius:6px;
-  border:1px solid #ccc;
+  width:100%;padding:10px;margin-top:6px;
+  border:1px solid #ccc;border-radius:6px;font-size:16px
 }
-textarea{min-height:140px}
+textarea{min-height:120px}
+.checks label{font-weight:400}
 canvas{
-  width:100%;
-  height:180px;
-  border:2px dashed #888;
-  border-radius:6px;
-  touch-action:none;
+  width:100%;height:180px;border:2px dashed #777;
+  border-radius:6px;touch-action:none
 }
-.sig-buttons{display:flex;gap:10px;margin-top:8px}
+.sig-buttons{display:flex;gap:10px;margin-top:6px}
 button{
-  flex:1;
-  padding:10px;
-  font-size:16px;
-  border-radius:6px;
-  border:none;
-  background:#ddd;
+  padding:12px;font-size:16px;border-radius:6px;border:none;
+  background:#ddd;width:100%
 }
-.locked{opacity:.6;pointer-events:none}
-@media print {
-  button { display:none }
-  body { background:#fff }
+.locked{pointer-events:none;opacity:.6}
+@media print{
+  button{display:none}
+  body{background:#fff}
 }
 </style>
 </head>
 
 <body>
 
-<h1>Hot Works Permit</h1>
+<h1>HOT WORKS PERMIT</h1>
+<p style="text-align:center;font-size:14px">
+Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulations
+</p>
 
 <div class="section">
-  <label>Job Location</label>
-  <input id="location">
+  <label>Permit Number</label>
+  <input>
+
+  <label>PCBU / Company</label>
+  <input>
+
+  <label>Site / Location</label>
+  <input>
+
+  <label>Supervisor / Issuer</label>
+  <input>
 
   <label>Date</label>
   <input id="date" type="date">
@@ -72,15 +69,43 @@ button{
 </div>
 
 <div class="section">
-  <label>Work Description</label>
-  <textarea></textarea>
+  <label>Description of Works</label>
+  <textarea placeholder="Detailed description of hot works, equipment, duration, and hazards"></textarea>
+</div>
+
+<div class="section checks">
+  <h2>Type of Hot Work</h2>
+  <label><input type="checkbox"> Welding</label>
+  <label><input type="checkbox"> Grinding</label>
+  <label><input type="checkbox"> Cutting</label>
+  <label><input type="checkbox"> Brazing</label>
+  <label><input type="checkbox"> Other</label>
+</div>
+
+<div class="section checks">
+  <h2>Controls & Fire Prevention</h2>
+  <label><input type="checkbox"> Combustible materials removed or protected</label>
+  <label><input type="checkbox"> Floors, walls, penetrations sealed</label>
+  <label><input type="checkbox"> Fire extinguishers available and suitable</label>
+  <label><input type="checkbox"> Gas cylinders secured and tested</label>
+  <label><input type="checkbox"> Ventilation adequate</label>
+  <label><input type="checkbox"> Area inspected before works</label>
+</div>
+
+<div class="section checks">
+  <h2>PPE</h2>
+  <label><input type="checkbox"> Eye & face protection</label>
+  <label><input type="checkbox"> Gloves</label>
+  <label><input type="checkbox"> Protective clothing</label>
+  <label><input type="checkbox"> Respiratory protection (if required)</label>
 </div>
 
 <div class="section">
-  <label>Fire Watcher Name</label>
-  <input id="fireName">
+  <h2>Fire Watch</h2>
+  <label>Fire Watch Name</label>
+  <input>
 
-  <label>Fire Watcher Signature</label>
+  <label>Fire Watch Signature</label>
   <canvas id="fireSig"></canvas>
   <div class="sig-buttons">
     <button onclick="fire.undo()">Undo</button>
@@ -89,70 +114,67 @@ button{
 
   <label>Fire Watch Sign-off Time</label>
   <input id="fireTime" readonly>
+
+  <p>Fire watch to remain for a minimum of 30 minutes after completion.</p>
 </div>
 
 <div class="section">
-  <label>Contractor Name</label>
-  <input id="contractorName">
+  <h2>Before / After Photos</h2>
+  <label>Before Hot Works</label>
+  <input type="file" accept="image/*" capture="environment">
+  <label>After Completion</label>
+  <input type="file" accept="image/*" capture="environment">
+</div>
 
-  <label>Contractor Signature</label>
-  <canvas id="conSig"></canvas>
+<div class="section">
+  <h2>Final Authorisation</h2>
+  <label>Authorising Person</label>
+  <input>
+
+  <label>Signature</label>
+  <canvas id="authSig"></canvas>
   <div class="sig-buttons">
-    <button onclick="con.undo()">Undo</button>
-    <button onclick="con.clear()">Clear</button>
+    <button onclick="auth.undo()">Undo</button>
+    <button onclick="auth.clear()">Clear</button>
   </div>
 
-  <label>Contractor Sign-off Time</label>
-  <input id="conTime" readonly>
+  <label>Authorisation Time</label>
+  <input id="authTime" readonly>
 </div>
 
 <div class="section">
-  <label>Before Photo</label>
-  <input type="file" accept="image/*" capture="environment">
-
-  <label>After Photo</label>
-  <input type="file" accept="image/*" capture="environment">
-</div>
-
-<div class="section">
-  <button onclick="exportPDF()">Export PDF</button>
+  <button onclick="exportPDF()">Export / Save PDF</button>
 </div>
 
 <script>
-function sigPad(id,timeField){
+function sigPad(id,time){
   const c=document.getElementById(id),x=c.getContext("2d");
   c.width=c.offsetWidth;c.height=c.offsetHeight;
-  let strokes=[],cur=[],d=false;
-  const pos=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
-  const redraw=()=>{x.clearRect(0,0,c.width,c.height);x.lineWidth=2;x.lineCap="round";strokes.forEach(s=>{x.beginPath();s.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()})}
-  const end=()=>{if(d&&cur.length){strokes.push(cur);document.getElementById(timeField).value=new Date().toLocaleString();checkLock()}d=false}
-  c.onmousedown=e=>{d=true;cur=[pos(e)]}
-  c.onmousemove=e=>{if(!d)return;cur.push(pos(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
+  let s=[],cur=[],d=false;
+  const p=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
+  const redraw=()=>{x.clearRect(0,0,c.width,c.height);x.lineWidth=2;x.lineCap="round";s.forEach(st=>{x.beginPath();st.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()})}
+  const end=()=>{if(d&&cur.length){s.push(cur);document.getElementById(time).value=new Date().toLocaleString();lockCheck()}d=false}
+  c.onmousedown=e=>{d=true;cur=[p(e)]}
+  c.onmousemove=e=>{if(!d)return;cur.push(p(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
   c.onmouseup=end;c.onmouseleave=end;
-  c.ontouchstart=e=>{d=true;cur=[pos(e)]}
-  c.ontouchmove=e=>{if(!d)return;cur.push(pos(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
+  c.ontouchstart=e=>{d=true;cur=[p(e)]}
+  c.ontouchmove=e=>{if(!d)return;cur.push(p(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
   c.ontouchend=end;
-  return{
-    undo(){strokes.pop();redraw()},
-    clear(){strokes=[];redraw()}
-  }
+  return{undo(){s.pop();redraw()},clear(){s=[];redraw()}}
 }
 
 const fire=sigPad("fireSig","fireTime");
-const con=sigPad("conSig","conTime");
+const auth=sigPad("authSig","authTime");
 
-function checkLock(){
-  if(document.getElementById("fireTime").value && document.getElementById("conTime").value){
+function lockCheck(){
+  if(fireTime.value && authTime.value){
     document.querySelectorAll("input,textarea,canvas,button").forEach(e=>e.classList.add("locked"));
   }
 }
 
-function exportPDF(){
-  window.print();
-}
-
-document.getElementById("date").value=new Date().toISOString().split("T")[0];
-document.getElementById("start").value=new Date().toTimeString().slice(0,5);
+function exportPDF(){window.print()}
+date.value=new Date().toISOString().split("T")[0];
+start.value=new Date().toTimeString().slice(0,5);
 </script>
 
 </body>
