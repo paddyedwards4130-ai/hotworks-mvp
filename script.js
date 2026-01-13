@@ -1,20 +1,26 @@
+const canvases = {};
+
 document.querySelectorAll(".sig").forEach(canvas => {
   const ctx = canvas.getContext("2d");
+  const history = [];
 
-  const rect = canvas.getBoundingClientRect();
-  const ratio = window.devicePixelRatio || 1;
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
 
-  canvas.width = rect.width * ratio;
-  canvas.height = rect.height * ratio;
-  ctx.scale(ratio, ratio);
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+  };
 
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#000";
+  resize();
 
   let drawing = false;
 
-  const point = e => {
+  const getPoint = e => {
     const r = canvas.getBoundingClientRect();
     const t = e.touches[0];
     return {
@@ -25,8 +31,9 @@ document.querySelectorAll(".sig").forEach(canvas => {
 
   canvas.addEventListener("touchstart", e => {
     e.preventDefault();
+    history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
     drawing = true;
-    const p = point(e);
+    const p = getPoint(e);
     ctx.beginPath();
     ctx.moveTo(p.x, p.y);
   });
@@ -34,13 +41,25 @@ document.querySelectorAll(".sig").forEach(canvas => {
   canvas.addEventListener("touchmove", e => {
     e.preventDefault();
     if (!drawing) return;
-    const p = point(e);
+    const p = getPoint(e);
     ctx.lineTo(p.x, p.y);
     ctx.stroke();
   });
 
   canvas.addEventListener("touchend", () => {
     drawing = false;
+  });
+
+  canvases[canvas.id] = { ctx, history, canvas };
+});
+
+document.querySelectorAll(".undo").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.target;
+    const sig = canvases[target];
+    if (!sig.history.length) return;
+    const img = sig.history.pop();
+    sig.ctx.putImageData(img, 0, 0);
   });
 });
 
