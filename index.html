@@ -1,210 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><link rel="manifest" href="manifest.json">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hot Works Permit</title>
 
+<link rel="manifest" href="manifest.json">
+
 <style>
 body{
-  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
-  background:#f2f2f2;margin:0;padding:12px
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background:#f4f4f4;
+  margin:0;
+  padding:10px;
 }
-h1,h2{text-align:center;margin:6px 0}
+h2{margin-top:20px}
 .section{
-  background:#fff;padding:14px;margin-bottom:14px;border-radius:10px
+  background:#fff;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:10px;
 }
-label{display:block;font-weight:600;margin-top:10px}
-input,textarea{
-  width:100%;padding:10px;margin-top:6px;
-  border:1px solid #ccc;border-radius:6px;font-size:16px
+label{display:block;margin-top:10px;font-weight:600}
+input, textarea, select{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  font-size:16px;
 }
 textarea{min-height:120px}
-.checks label{font-weight:400}
 canvas{
-  width:100%;height:180px;border:2px dashed #777;
-  border-radius:6px;touch-action:none
+  border:1px solid #ccc;
+  width:100%;
+  height:160px;
+  touch-action:none;
 }
-.sig-buttons{display:flex;gap:10px;margin-top:6px}
+.locked{
+  pointer-events:none;
+  opacity:0.6;
+}
 button{
-  padding:12px;font-size:16px;border-radius:6px;border:none;
-  background:#ddd;width:100%
+  margin-top:10px;
+  padding:12px;
+  font-size:16px;
+  width:100%;
 }
-.locked{pointer-events:none;opacity:.6}
-@media print{
-  button{display:none}
-  body{background:#fff}
+.photo-preview img{
+  max-width:100%;
+  margin-top:10px;
+  border-radius:8px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>HOT WORKS PERMIT</h1>
-<p style="text-align:center;font-size:14px">
-Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulations
-</p>
+<h1>Hot Works Permit</h1>
 
 <div class="section">
-  <label>Permit Number</label>
-  <input>
+<label>Date</label>
+<input type="date" id="date">
 
-  <label>PCBU / Company</label>
-  <input>
+<label>Site / Location</label>
+<input type="text" id="site">
 
-  <label>Site / Location</label>
-  <input>
-
-  <label>Supervisor / Issuer</label>
-  <input>
-
-  <label>Date</label>
-  <input id="date" type="date">
-
-  <label>Start Time</label>
-  <input id="start" type="time">
-
-  <label>Finish Time</label>
-  <input id="finish" type="time">
+<label>Company / Contractor</label>
+<input type="text" id="company">
 </div>
 
 <div class="section">
-  <label>Description of Works</label>
-  <textarea placeholder="Detailed description of hot works, equipment, duration, and hazards"></textarea>
-</div>
+<h2>Type of Hot Work</h2>
 
-<div class="section checks">
-  <h2>Type of Hot Work</h2>
+<label>
+<select id="hotType">
+  <option value="">Select</option>
+  <option>Welding</option>
+  <option>Cutting</option>
+  <option>Grinding</option>
+  <option>Oxy / LPG Heating</option>
+  <option>Brazing / Soldering</option>
+  <option>Torch-on / Heat Gun</option>
+  <option>Other</option>
+</select>
+</label>
 
-  <label><input type="checkbox"> Arc welding (MMA / Stick)</label>
-  <label><input type="checkbox"> MIG welding</label>
-  <label><input type="checkbox"> TIG welding</label>
-  <label><input type="checkbox"> Oxy-acetylene welding</label>
-
-  <label><input type="checkbox"> Thermal cutting (oxy / plasma)</label>
-  <label><input type="checkbox"> Plasma cutting</label>
-  <label><input type="checkbox"> Oxy cutting</label>
-
-  <label><input type="checkbox"> Grinding</label>
-  <label><input type="checkbox"> Linishing</label>
-  <label><input type="checkbox"> Sanding (spark producing)</label>
-
-  <label><input type="checkbox"> Brazing</label>
-  <label><input type="checkbox"> Soldering</label>
-
-  <label><input type="checkbox"> Heating metal (heat guns, torches)</label>
-  <label><input type="checkbox"> Shrink fitting / heat straightening</label>
-
-  <label><input type="checkbox"> Bitumen / asphalt heating</label>
-  <label><input type="checkbox"> Roofing works involving heat</label>
-
-  <label><input type="checkbox"> Use of open flame</label>
-  <label><input type="checkbox"> Thawing frozen pipes with heat</label>
-
-  <label><input type="checkbox"> Internal combustion engine use in restricted area</label>
-  <label><input type="checkbox"> Hot tapping</label>
-
-  <label style="margin-top:14px">Other Hot Works (describe)</label>
-  <textarea placeholder="Describe any other hot work activities not listed above"></textarea>
-</div>
-
-<div class="section checks">
-  <h2>Controls & Fire Prevention</h2>
-  <label><input type="checkbox"> Combustible materials removed or protected</label>
-  <label><input type="checkbox"> Floors, walls, penetrations sealed</label>
-  <label><input type="checkbox"> Fire extinguishers available and suitable</label>
-  <label><input type="checkbox"> Gas cylinders secured and tested</label>
-  <label><input type="checkbox"> Ventilation adequate</label>
-  <label><input type="checkbox"> Area inspected before works</label>
-</div>
-
-<div class="section checks">
-  <h2>PPE</h2>
-  <label><input type="checkbox"> Eye & face protection</label>
-  <label><input type="checkbox"> Gloves</label>
-  <label><input type="checkbox"> Protective clothing</label>
-  <label><input type="checkbox"> Respiratory protection (if required)</label>
+<label>If Other, describe</label>
+<textarea id="hotOther"></textarea>
 </div>
 
 <div class="section">
-  <h2>Fire Watch</h2>
-  <label>Fire Watch Name</label>
-  <input>
-
-  <label>Fire Watch Signature</label>
-  <canvas id="fireSig"></canvas>
-  <div class="sig-buttons">
-    <button onclick="fire.undo()">Undo</button>
-    <button onclick="fire.clear()">Clear</button>
-  </div>
-
-  <label>Fire Watch Sign-off Time</label>
-  <input id="fireTime" readonly>
-
-  <p>Fire watch to remain for a minimum of 30 minutes after completion.</p>
+<h2>Work Description</h2>
+<textarea id="description" placeholder="Detailed description of works"></textarea>
 </div>
 
 <div class="section">
-  <h2>Before / After Photos</h2>
-  <label>Before Hot Works</label>
-  <input type="file" accept="image/*" capture="environment">
-  <label>After Completion</label>
-  <input type="file" accept="image/*" capture="environment">
+<h2>PPE Required</h2>
+<textarea id="ppe" placeholder="e.g. Welding helmet, gloves, FR clothing, eye protection"></textarea>
 </div>
 
 <div class="section">
-  <h2>Final Authorisation</h2>
-  <label>Authorising Person</label>
-  <input>
+<h2>Fire Watch</h2>
 
-  <label>Signature</label>
-  <canvas id="authSig"></canvas>
-  <div class="sig-buttons">
-    <button onclick="auth.undo()">Undo</button>
-    <button onclick="auth.clear()">Clear</button>
-  </div>
+<label>Fire Watcher Name</label>
+<input type="text" id="fireName">
 
-  <label>Authorisation Time</label>
-  <input id="authTime" readonly>
+<label>Fire watch must remain for 30 minutes post works.</label>
+
+<label>Fire Watch Signature</label>
+<canvas id="fireSig"></canvas>
+<button onclick="clearSig('fireSig')">Undo Signature</button>
+
+<label>Time Signed</label>
+<input type="time" id="fireTime">
 </div>
 
 <div class="section">
-  <button onclick="exportPDF()">Export / Save PDF</button>
+<h2>Permit Authorisation</h2>
+
+<label>Authorised By</label>
+<input type="text" id="authName">
+
+<label>Authorising Signature</label>
+<canvas id="authSig"></canvas>
+<button onclick="clearSig('authSig')">Undo Signature</button>
+
+<label>Time Signed</label>
+<input type="time" id="authTime">
 </div>
+
+<div class="section">
+<h2>Photos</h2>
+
+<label>Before Work</label>
+<input type="file" accept="image/*" capture="environment" id="photoBefore">
+<div class="photo-preview" id="beforePreview"></div>
+
+<label>After Work</label>
+<input type="file" accept="image/*" capture="environment" id="photoAfter">
+<div class="photo-preview" id="afterPreview"></div>
+</div>
+
+<div class="section">
+<button onclick="exportPDF()">Export Permit (PDF)</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-function sigPad(id,time){
-  const c=document.getElementById(id),x=c.getContext("2d");
-  c.width=c.offsetWidth;c.height=c.offsetHeight;
-  let s=[],cur=[],d=false;
-  const p=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
-  const redraw=()=>{x.clearRect(0,0,c.width,c.height);x.lineWidth=2;x.lineCap="round";s.forEach(st=>{x.beginPath();st.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()})}
-  const end=()=>{if(d&&cur.length){s.push(cur);document.getElementById(time).value=new Date().toLocaleString();lockCheck()}d=false}
-  c.onmousedown=e=>{d=true;cur=[p(e)]}
-  c.onmousemove=e=>{if(!d)return;cur.push(p(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
-  c.onmouseup=end;c.onmouseleave=end;
-  c.ontouchstart=e=>{d=true;cur=[p(e)]}
-  c.ontouchmove=e=>{if(!d)return;cur.push(p(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
-  c.ontouchend=end;
-  return{undo(){s.pop();redraw()},clear(){s=[];redraw()}}
+let permitFinalised = false;
+
+const fields = document.querySelectorAll("input,textarea,select");
+
+fields.forEach(f=>{
+  f.oninput = saveData;
+});
+
+function saveData(){
+  const data = {};
+  fields.forEach(f=>data[f.id]=f.value);
+  localStorage.setItem("permitData", JSON.stringify(data));
 }
 
-const fire=sigPad("fireSig","fireTime");
-const auth=sigPad("authSig","authTime");
+(function loadData(){
+  const d = JSON.parse(localStorage.getItem("permitData")||"{}");
+  fields.forEach(f=>{ if(d[f.id]) f.value=d[f.id]; });
+})();
+
+// SIGNATURE HANDLING
+function setupCanvas(id){
+  const c = document.getElementById(id);
+  const ctx = c.getContext("2d");
+  let drawing=false;
+
+  c.addEventListener("touchstart",e=>{
+    if(permitFinalised) return;
+    drawing=true;
+    ctx.beginPath();
+    ctx.moveTo(e.touches[0].clientX-c.offsetLeft, e.touches[0].clientY-c.offsetTop);
+  });
+
+  c.addEventListener("touchmove",e=>{
+    if(!drawing||permitFinalised) return;
+    ctx.lineTo(e.touches[0].clientX-c.offsetLeft, e.touches[0].clientY-c.offsetTop);
+    ctx.stroke();
+  });
+
+  c.addEventListener("touchend",()=>drawing=false);
+}
+
+setupCanvas("fireSig");
+setupCanvas("authSig");
+
+function clearSig(id){
+  if(permitFinalised) return;
+  const c=document.getElementById(id);
+  c.getContext("2d").clearRect(0,0,c.width,c.height);
+}
+
+// LOCK AFTER FINAL SIGNATURES
+document.getElementById("fireTime").onchange = lockCheck;
+document.getElementById("authTime").onchange = lockCheck;
 
 function lockCheck(){
   if(fireTime.value && authTime.value){
-    document.querySelectorAll("input,textarea,canvas,button").forEach(e=>e.classList.add("locked"));
+    permitFinalised = true;
+    fields.forEach(f=>f.disabled=true);
+    document.querySelectorAll("canvas").forEach(c=>c.classList.add("locked"));
   }
 }
 
-function exportPDF(){window.print()}
-date.value=new Date().toISOString().split("T")[0];
-start.value=new Date().toTimeString().slice(0,5);
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+// PHOTO PREVIEW
+photoBefore.onchange = ()=>preview(photoBefore, beforePreview);
+photoAfter.onchange = ()=>preview(photoAfter, afterPreview);
+
+function preview(input, box){
+  const img=document.createElement("img");
+  img.src=URL.createObjectURL(input.files[0]);
+  box.innerHTML="";
+  box.appendChild(img);
 }
-</script> </body>
+
+// EXPORT
+async function exportPDF(){
+  const pdf = new jspdf.jsPDF("p","mm","a4");
+  const canvas = await html2canvas(document.body);
+  const imgData = canvas.toDataURL("image/png");
+  pdf.addImage(imgData,"PNG",5,5,200,0);
+  pdf.save("Hot_Work_Permit.pdf");
+}
+</script>
+
+</body>
 </html>
