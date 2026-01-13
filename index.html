@@ -9,46 +9,53 @@
 
 <style>
 body{
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
   background:#f4f4f4;
   margin:0;
-  padding:10px;
+  padding:10px
 }
-h2{margin-top:20px}
+h1,h2{margin:10px 0}
 .section{
   background:#fff;
   padding:15px;
   margin-bottom:15px;
-  border-radius:10px;
+  border-radius:10px
 }
-label{display:block;margin-top:10px;font-weight:600}
-input, textarea, select{
+label{
+  display:block;
+  margin-top:10px;
+  font-weight:600
+}
+input,textarea,select{
   width:100%;
   padding:10px;
   margin-top:5px;
-  font-size:16px;
+  font-size:16px
 }
 textarea{min-height:120px}
 canvas{
-  border:1px solid #ccc;
   width:100%;
   height:160px;
-  touch-action:none;
+  border:1px solid #ccc;
+  touch-action:none
 }
 .locked{
   pointer-events:none;
-  opacity:0.6;
+  opacity:.6
 }
 button{
   margin-top:10px;
   padding:12px;
   font-size:16px;
-  width:100%;
+  width:100%
 }
 .photo-preview img{
   max-width:100%;
   margin-top:10px;
-  border-radius:8px;
+  border-radius:8px
+}
+@media print{
+  button{display:none}
 }
 </style>
 </head>
@@ -56,22 +63,24 @@ button{
 <body>
 
 <h1>Hot Works Permit</h1>
+<p style="font-size:14px">
+Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulations
+</p>
 
 <div class="section">
 <label>Date</label>
 <input type="date" id="date">
 
 <label>Site / Location</label>
-<input type="text" id="site">
+<input id="site">
 
 <label>Company / Contractor</label>
-<input type="text" id="company">
+<input id="company">
 </div>
 
 <div class="section">
 <h2>Type of Hot Work</h2>
 
-<label>
 <select id="hotType">
   <option value="">Select</option>
   <option>Welding</option>
@@ -82,29 +91,28 @@ button{
   <option>Torch-on / Heat Gun</option>
   <option>Other</option>
 </select>
-</label>
 
 <label>If Other, describe</label>
 <textarea id="hotOther"></textarea>
 </div>
 
 <div class="section">
-<h2>Work Description</h2>
-<textarea id="description" placeholder="Detailed description of works"></textarea>
+<h2>Description of Works</h2>
+<textarea id="description"></textarea>
 </div>
 
 <div class="section">
 <h2>PPE Required</h2>
-<textarea id="ppe" placeholder="e.g. Welding helmet, gloves, FR clothing, eye protection"></textarea>
+<textarea id="ppe"></textarea>
 </div>
 
 <div class="section">
 <h2>Fire Watch</h2>
 
 <label>Fire Watcher Name</label>
-<input type="text" id="fireName">
+<input id="fireName">
 
-<label>Fire watch must remain for 30 minutes post works.</label>
+<p>Fire watch to remain for a minimum of 30 minutes after completion.</p>
 
 <label>Fire Watch Signature</label>
 <canvas id="fireSig"></canvas>
@@ -118,7 +126,7 @@ button{
 <h2>Permit Authorisation</h2>
 
 <label>Authorised By</label>
-<input type="text" id="authName">
+<input id="authName">
 
 <label>Authorising Signature</label>
 <canvas id="authSig"></canvas>
@@ -131,11 +139,15 @@ button{
 <div class="section">
 <h2>Photos</h2>
 
-<label>Before Work</label>
+<label>Firefighting Equipment in Place (extinguishers, hose, fire blanket)</label>
+<input type="file" accept="image/*" capture="environment" id="photoFire">
+<div class="photo-preview" id="firePreview"></div>
+
+<label>Before Hot Works</label>
 <input type="file" accept="image/*" capture="environment" id="photoBefore">
 <div class="photo-preview" id="beforePreview"></div>
 
-<label>After Work</label>
+<label>After Completion</label>
 <input type="file" accept="image/*" capture="environment" id="photoAfter">
 <div class="photo-preview" id="afterPreview"></div>
 </div>
@@ -148,86 +160,86 @@ button{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-let permitFinalised = false;
+let permitFinalised=false;
 
-const fields = document.querySelectorAll("input,textarea,select");
+const fields=document.querySelectorAll("input,textarea,select");
 
-fields.forEach(f=>{
-  f.oninput = saveData;
-});
+fields.forEach(f=>f.oninput=saveData);
 
 function saveData(){
-  const data = {};
-  fields.forEach(f=>data[f.id]=f.value);
-  localStorage.setItem("permitData", JSON.stringify(data));
+  const d={};
+  fields.forEach(f=>d[f.id]=f.value);
+  localStorage.setItem("permitData",JSON.stringify(d));
 }
 
-(function loadData(){
-  const d = JSON.parse(localStorage.getItem("permitData")||"{}");
-  fields.forEach(f=>{ if(d[f.id]) f.value=d[f.id]; });
+(function load(){
+  const d=JSON.parse(localStorage.getItem("permitData")||"{}");
+  fields.forEach(f=>{if(d[f.id])f.value=d[f.id]});
 })();
 
-// SIGNATURE HANDLING
-function setupCanvas(id){
-  const c = document.getElementById(id);
-  const ctx = c.getContext("2d");
-  let drawing=false;
+function setupSig(id){
+  const c=document.getElementById(id);
+  const x=c.getContext("2d");
+  let d=false;
 
-  c.addEventListener("touchstart",e=>{
-    if(permitFinalised) return;
-    drawing=true;
-    ctx.beginPath();
-    ctx.moveTo(e.touches[0].clientX-c.offsetLeft, e.touches[0].clientY-c.offsetTop);
-  });
-
-  c.addEventListener("touchmove",e=>{
-    if(!drawing||permitFinalised) return;
-    ctx.lineTo(e.touches[0].clientX-c.offsetLeft, e.touches[0].clientY-c.offsetTop);
-    ctx.stroke();
-  });
-
-  c.addEventListener("touchend",()=>drawing=false);
+  c.ontouchstart=e=>{
+    if(permitFinalised)return;
+    d=true;
+    x.beginPath();
+    x.moveTo(e.touches[0].clientX-c.offsetLeft,e.touches[0].clientY-c.offsetTop);
+  };
+  c.ontouchmove=e=>{
+    if(!d||permitFinalised)return;
+    x.lineTo(e.touches[0].clientX-c.offsetLeft,e.touches[0].clientY-c.offsetTop);
+    x.stroke();
+  };
+  c.ontouchend=()=>d=false;
 }
 
-setupCanvas("fireSig");
-setupCanvas("authSig");
+setupSig("fireSig");
+setupSig("authSig");
 
 function clearSig(id){
-  if(permitFinalised) return;
+  if(permitFinalised)return;
   const c=document.getElementById(id);
   c.getContext("2d").clearRect(0,0,c.width,c.height);
 }
 
-// LOCK AFTER FINAL SIGNATURES
-document.getElementById("fireTime").onchange = lockCheck;
-document.getElementById("authTime").onchange = lockCheck;
+fireTime.onchange=lockCheck;
+authTime.onchange=lockCheck;
 
 function lockCheck(){
   if(fireTime.value && authTime.value){
-    permitFinalised = true;
+    permitFinalised=true;
     fields.forEach(f=>f.disabled=true);
     document.querySelectorAll("canvas").forEach(c=>c.classList.add("locked"));
   }
 }
 
-// PHOTO PREVIEW
-photoBefore.onchange = ()=>preview(photoBefore, beforePreview);
-photoAfter.onchange = ()=>preview(photoAfter, afterPreview);
-
-function preview(input, box){
+function preview(input,box){
   const img=document.createElement("img");
   img.src=URL.createObjectURL(input.files[0]);
   box.innerHTML="";
   box.appendChild(img);
 }
 
-// EXPORT
+photoFire.onchange=()=>preview(photoFire,firePreview);
+photoBefore.onchange=()=>preview(photoBefore,beforePreview);
+photoAfter.onchange=()=>preview(photoAfter,afterPreview);
+
 async function exportPDF(){
-  const pdf = new jspdf.jsPDF("p","mm","a4");
-  const canvas = await html2canvas(document.body);
-  const imgData = canvas.toDataURL("image/png");
-  pdf.addImage(imgData,"PNG",5,5,200,0);
+  const pdf=new jspdf.jsPDF("p","mm","a4");
+  const canvas=await html2canvas(document.body);
+  pdf.addImage(canvas.toDataURL("image/png"),"PNG",5,5,200,0);
   pdf.save("Hot_Work_Permit.pdf");
+}
+
+date.value=new Date().toISOString().split("T")[0];
+</script>
+
+<script>
+if("serviceWorker"in navigator){
+  navigator.serviceWorker.register("service-worker.js");
 }
 </script>
 
