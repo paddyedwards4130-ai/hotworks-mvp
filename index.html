@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Hot Works Permit</title>
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Hot Works Permit">
+  <meta name="theme-color" content="#000000">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>🔥 Hot Works Permit</h1>
+
+<form id="permitForm">
+
+  <!-- STEP 1 -->
+  <h2>1. Job Details</h2>
+
+  <label>Site Address</label>
+  <input type="text" required autocomplete="street-address">
+
+  <label>Exact Work Location</label>
+  <input type="text" required>
+
+  <label>Description of Hot Work</label>
+  <input type="text" required>
+
+  <label>Date</label>
+  <input type="date" required>
+
+  <label>Start Time</label>
+  <input type="time" required>
+
+  <label>End Time</label>
+  <input type="time" required>
+
+  <!-- STEP 2 -->
+  <h2>2. Type of Hot Work</h2>
+
+  <label><input type="checkbox" required> Welding</label>
+  <label><input type="checkbox"> Grinding</label>
+  <label><input type="checkbox"> Cutting</label>
+  <label><input type="checkbox"> Oxy / Plasma</label>
+
+  <!-- STEP 3 -->
+  <h2>3. Fire & Ignition Controls</h2>
+
+  <label><input type="checkbox" required> 9kg Dry Chemical Extinguisher</label>
+  <label><input type="checkbox"> Water Hose Connected & Tested</label>
+  <label><input type="checkbox"> Fire Blanket Available</label>
+  <label><input type="checkbox"> Combustibles Removed (5m)</label>
+
+  <!-- STEP 4 -->
+  <h2>4. Fire Watch</h2>
+
+  <label>
+    <select required>
+      <option value="">Select option</option>
+      <option>Fire Watch Assigned</option>
+      <option>Fire Watch Not Required (Reason Recorded)</option>
+    </select>
+  </label>
+
+  <!-- STEP 5 -->
+  <h2>5. Sign Off</h2>
+
+  <label>Person Performing Hot Work</label>
+  <input type="text" required autocapitalize="words">
+
+  <label>Permit Issuer / Supervisor</label>
+  <input type="text" required autocapitalize="words">
+
+  <p class="declaration">
+    This Hot Works Permit has been issued, completed, and closed in accordance with
+    <strong>AS 1674.1 – Safety in Welding and Allied Processes</strong>.
+    All reasonable precautions were taken to prevent fire, personal injury, and property damage.
+  </p>
+
+  <button type="submit">SAVE PERMIT</button>
+
+</form>
+
+<script src="app.js"></script>
+</body>
+</html>
