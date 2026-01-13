@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hot Works Permit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PWA basics -->
+  <meta name="theme-color" content="#d32f2f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>🔥 Hot Works Permit</h1>
+
+<form id="permitForm">
+
+  <h2>1. Job Details</h2>
+  <label>Site Address</label>
+  <input id="site" required>
+
+  <label>Exact Work Location</label>
+  <input id="location" required>
+
+  <label>Type of Hot Work</label>
+  <select id="workType" required>
+    <option value="">Select</option>
+    <option>Welding</option>
+    <option>Grinding</option>
+    <option>Cutting</option>
+    <option>Oxy / Plasma</option>
+    <option>Other</option>
+  </select>
+
+  <h2>2. Operator</h2>
+  <label>Name</label>
+  <input id="operator" required>
+
+  <label>Company (if applicable)</label>
+  <input id="company">
+
+  <h2>3. Fire Risk Checklist (AS 1674)</h2>
+  <div class="checklist">
+    <label><input type="checkbox" required> Combustibles cleared (15m)</label>
+    <label><input type="checkbox" required> Floors / walls / cavities checked</label>
+    <label><input type="checkbox" required> Flammable liquids removed</label>
+    <label><input type="checkbox" required> Area cleaned of dust & debris</label>
+    <label><input type="checkbox" required> Weather conditions suitable</label>
+  </div>
+
+  <h2>4. Fire Fighting Equipment</h2>
+  <div class="checklist">
+    <label><input type="checkbox" required> ABE extinguisher on hand (in date)</label>
+    <label><input type="checkbox"> Fire blanket available</label>
+    <label><input type="checkbox"> Hose connected (if available)</label>
+  </div>
+
+  <h2>5. Fire Watch</h2>
+  <label>Fire Watch Person</label>
+  <input id="firewatch" required>
+
+  <h2>6. Authorisation</h2>
+  <label>Authorising Person</label>
+  <input id="authoriser" required>
+
+  <button type="submit">✅ Complete Permit & Generate PDF</button>
+
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
