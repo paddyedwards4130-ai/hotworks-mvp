@@ -5,21 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hot Works Permit</title>
 
-<link rel="manifest" href="manifest.json">
-
 <style>
 body{
   font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#f4f4f4;
+  background:#eef1f4;
   margin:0;
-  padding:10px
+  padding:12px
 }
-h1,h2{margin:10px 0}
+h1{margin-bottom:4px}
+h2{
+  margin:0 0 10px 0;
+  font-size:18px;
+  border-bottom:1px solid #ddd;
+  padding-bottom:4px
+}
 .section{
   background:#fff;
-  padding:15px;
-  margin-bottom:15px;
-  border-radius:10px
+  padding:14px;
+  margin-bottom:14px;
+  border-radius:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.08)
 }
 label{
   display:block;
@@ -30,9 +35,11 @@ input,textarea{
   width:100%;
   padding:10px;
   margin-top:5px;
-  font-size:16px
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid #ccc
 }
-textarea{min-height:120px}
+textarea{min-height:140px}
 .checks label{
   font-weight:400;
   margin-top:6px
@@ -40,23 +47,29 @@ textarea{min-height:120px}
 canvas{
   width:100%;
   height:160px;
-  border:1px solid #ccc;
-  touch-action:none
-}
-.locked{
-  pointer-events:none;
-  opacity:.6
+  border:1px solid #aaa;
+  border-radius:8px;
+  background:#fff;
+  margin-top:6px
 }
 button{
   margin-top:10px;
   padding:12px;
   font-size:16px;
-  width:100%
+  width:100%;
+  border-radius:10px;
+  border:none;
+  background:#222;
+  color:#fff
 }
 .photo-preview img{
   max-width:100%;
-  margin-top:10px;
+  margin-top:8px;
   border-radius:8px
+}
+.locked{
+  pointer-events:none;
+  opacity:.6
 }
 @media print{
   button{display:none}
@@ -67,8 +80,8 @@ button{
 <body>
 
 <h1>Hot Works Permit</h1>
-<p style="font-size:14px">
-Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulations
+<p style="font-size:13px;margin-top:0">
+Complies with AS 1674.1, AS 1940 and Australian WHS requirements
 </p>
 
 <div class="section">
@@ -90,7 +103,7 @@ Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulati
 <label><input type="checkbox"> Grinding</label>
 <label><input type="checkbox"> Oxy / LPG Heating</label>
 <label><input type="checkbox"> Brazing / Soldering</label>
-<label><input type="checkbox"> Torch-on / Heat Gun</label>
+<label><input type="checkbox"> Torch / Heat Gun</label>
 
 <label style="margin-top:12px">Other Hot Work (describe)</label>
 <textarea id="hotOther"></textarea>
@@ -111,8 +124,6 @@ Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulati
 
 <label>Fire Watcher Name</label>
 <input id="fireName">
-
-<p>Fire watch to remain for a minimum of 30 minutes after completion.</p>
 
 <label>Fire Watch Signature</label>
 <canvas id="fireSig"></canvas>
@@ -137,7 +148,7 @@ Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulati
 </div>
 
 <div class="section">
-<h2>Photos (Evidence)</h2>
+<h2>Photo Evidence</h2>
 
 <label>Firefighting Equipment in Place</label>
 <input type="file" accept="image/*" capture="environment" id="photoFire">
@@ -165,87 +176,19 @@ Designed to align with AS 1674.1, AS 1940 and applicable Australian WHS Regulati
 
 <script>
 let permitFinalised=false;
-const fields=document.querySelectorAll("input,textarea");
 
-fields.forEach(f=>f.oninput=saveData);
+function setupSignature(canvas){
+  const ctx=canvas.getContext("2d");
+  const ratio=window.devicePixelRatio||1;
+  canvas.width=canvas.offsetWidth*ratio;
+  canvas.height=canvas.offsetHeight*ratio;
+  ctx.scale(ratio,ratio);
+  ctx.lineWidth=2;
+  ctx.lineCap="round";
 
-function saveData(){
-  const d={};
-  fields.forEach(f=>d[f.id]=f.value);
-  localStorage.setItem("permitData",JSON.stringify(d));
-}
+  let drawing=false;
 
-(function load(){
-  const d=JSON.parse(localStorage.getItem("permitData")||"{}");
-  fields.forEach(f=>{if(d[f.id])f.value=d[f.id]});
-})();
-
-function setupSig(id){
-  const c=document.getElementById(id);
-  const x=c.getContext("2d");
-  let d=false;
-
-  c.ontouchstart=e=>{
-    if(permitFinalised)return;
-    d=true;
-    x.beginPath();
-    x.moveTo(e.touches[0].clientX-c.offsetLeft,e.touches[0].clientY-c.offsetTop);
-  };
-  c.ontouchmove=e=>{
-    if(!d||permitFinalised)return;
-    x.lineTo(e.touches[0].clientX-c.offsetLeft,e.touches[0].clientY-c.offsetTop);
-    x.stroke();
-  };
-  c.ontouchend=()=>d=false;
-}
-
-setupSig("fireSig");
-setupSig("authSig");
-
-function clearSig(id){
-  if(permitFinalised)return;
-  const c=document.getElementById(id);
-  c.getContext("2d").clearRect(0,0,c.width,c.height);
-}
-
-fireTime.onchange=lockCheck;
-authTime.onchange=lockCheck;
-
-function lockCheck(){
-  if(fireTime.value && authTime.value){
-    permitFinalised=true;
-    fields.forEach(f=>f.disabled=true);
-    document.querySelectorAll("canvas").forEach(c=>c.classList.add("locked"));
-  }
-}
-
-function preview(input,box){
-  const img=document.createElement("img");
-  img.src=URL.createObjectURL(input.files[0]);
-  box.innerHTML="";
-  box.appendChild(img);
-}
-
-photoFire.onchange=()=>preview(photoFire,firePreview);
-photoBefore.onchange=()=>preview(photoBefore,beforePreview);
-photoDuring.onchange=()=>preview(photoDuring,duringPreview);
-photoAfter.onchange=()=>preview(photoAfter,afterPreview);
-
-async function exportPDF(){
-  const pdf=new jspdf.jsPDF("p","mm","a4");
-  const canvas=await html2canvas(document.body);
-  pdf.addImage(canvas.toDataURL("image/png"),"PNG",5,5,200,0);
-  pdf.save("Hot_Work_Permit.pdf");
-}
-
-date.value=new Date().toISOString().split("T")[0];
-</script>
-
-<script>
-if("serviceWorker"in navigator){
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
-
-</body>
-</html>
+  function getPos(e){
+    const r=canvas.getBoundingClientRect();
+    const t=e.touches[0];
+    return {x:t.clientX
