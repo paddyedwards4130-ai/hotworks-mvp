@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hot Works Permit</title>
+
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background:#f2f2f2;
+  margin:0;
+  padding:12px;
+}
+h1{text-align:center}
+.section{
+  background:#fff;
+  padding:14px;
+  margin-bottom:14px;
+  border-radius:10px;
+}
+label{font-weight:600;display:block;margin-top:10px}
+input,textarea{
+  width:100%;
+  padding:10px;
+  font-size:16px;
+  margin-top:6px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+textarea{min-height:140px}
+canvas{
+  width:100%;
+  height:180px;
+  border:2px dashed #888;
+  border-radius:6px;
+  touch-action:none;
+}
+.sig-buttons{display:flex;gap:10px;margin-top:8px}
+button{
+  flex:1;
+  padding:10px;
+  font-size:16px;
+  border-radius:6px;
+  border:none;
+  background:#ddd;
+}
+.locked{opacity:.6;pointer-events:none}
+@media print {
+  button { display:none }
+  body { background:#fff }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Hot Works Permit</h1>
+
+<div class="section">
+  <label>Job Location</label>
+  <input id="location">
+
+  <label>Date</label>
+  <input id="date" type="date">
+
+  <label>Start Time</label>
+  <input id="start" type="time">
+
+  <label>Finish Time</label>
+  <input id="finish" type="time">
+</div>
+
+<div class="section">
+  <label>Work Description</label>
+  <textarea></textarea>
+</div>
+
+<div class="section">
+  <label>Fire Watcher Name</label>
+  <input id="fireName">
+
+  <label>Fire Watcher Signature</label>
+  <canvas id="fireSig"></canvas>
+  <div class="sig-buttons">
+    <button onclick="fire.undo()">Undo</button>
+    <button onclick="fire.clear()">Clear</button>
+  </div>
+
+  <label>Fire Watch Sign-off Time</label>
+  <input id="fireTime" readonly>
+</div>
+
+<div class="section">
+  <label>Contractor Name</label>
+  <input id="contractorName">
+
+  <label>Contractor Signature</label>
+  <canvas id="conSig"></canvas>
+  <div class="sig-buttons">
+    <button onclick="con.undo()">Undo</button>
+    <button onclick="con.clear()">Clear</button>
+  </div>
+
+  <label>Contractor Sign-off Time</label>
+  <input id="conTime" readonly>
+</div>
+
+<div class="section">
+  <label>Before Photo</label>
+  <input type="file" accept="image/*" capture="environment">
+
+  <label>After Photo</label>
+  <input type="file" accept="image/*" capture="environment">
+</div>
+
+<div class="section">
+  <button onclick="exportPDF()">Export PDF</button>
+</div>
+
+<script>
+function sigPad(id,timeField){
+  const c=document.getElementById(id),x=c.getContext("2d");
+  c.width=c.offsetWidth;c.height=c.offsetHeight;
+  let strokes=[],cur=[],d=false;
+  const pos=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};
+  const redraw=()=>{x.clearRect(0,0,c.width,c.height);x.lineWidth=2;x.lineCap="round";strokes.forEach(s=>{x.beginPath();s.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()})}
+  const end=()=>{if(d&&cur.length){strokes.push(cur);document.getElementById(timeField).value=new Date().toLocaleString();checkLock()}d=false}
+  c.onmousedown=e=>{d=true;cur=[pos(e)]}
+  c.onmousemove=e=>{if(!d)return;cur.push(pos(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
+  c.onmouseup=end;c.onmouseleave=end;
+  c.ontouchstart=e=>{d=true;cur=[pos(e)]}
+  c.ontouchmove=e=>{if(!d)return;cur.push(pos(e));redraw();x.beginPath();cur.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()}
+  c.ontouchend=end;
+  return{
+    undo(){strokes.pop();redraw()},
+    clear(){strokes=[];redraw()}
+  }
+}
+
+const fire=sigPad("fireSig","fireTime");
+const con=sigPad("conSig","conTime");
+
+function checkLock(){
+  if(document.getElementById("fireTime").value && document.getElementById("conTime").value){
+    document.querySelectorAll("input,textarea,canvas,button").forEach(e=>e.classList.add("locked"));
+  }
+}
+
+function exportPDF(){
+  window.print();
+}
+
+document.getElementById("date").value=new Date().toISOString().split("T")[0];
+document.getElementById("start").value=new Date().toTimeString().slice(0,5);
+</script>
+
+</body>
+</html>
